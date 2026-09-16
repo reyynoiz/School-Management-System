@@ -11,12 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('tbl_users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('username')->unique();
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('phone')->nullable();
+            $table->string('img_url')->nullable();
+            $table->enum('role', ['admin', 'teacher', 'student'])->default('student');
+            $table->tinyInteger('status')->default(1);
+            $table->timestamp('last_login_time')->nullable();
+            $table->tinyInteger('archived')->default(0);
             $table->rememberToken();
             $table->timestamps();
         });
@@ -37,12 +44,9 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('tbl_users');
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
     }
