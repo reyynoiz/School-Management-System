@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Models\User;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Http\RedirectResponse;
@@ -27,6 +28,23 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
 
         $request->session()->regenerate();
+
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
+        // Tolak login kalau status akun nonaktif atau sudah di archive
+        if ($user->status != 1 || $user->archived == 1) {
+            Auth::guard('web')->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            return redirect()->route('login')->withErrors([
+                'email' => 'Akun Anda tidak aktif. Silakan hubungi administrator.',
+            ]);
+        }
+
+        // Catat waktu login terakhir
+        $user->update(['last_login_time' => now()]);
 
         return redirect()->intended(route('dashboard', absolute: false));
     }
