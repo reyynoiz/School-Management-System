@@ -16,6 +16,7 @@ class Student extends Model
         'nis',
         'name',
         'gender',
+        'archived',
     ];
 
     //Menyiapkan hubungan antara model Student dan model User
