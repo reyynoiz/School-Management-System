@@ -21,14 +21,13 @@ class DashboardController extends Controller
         if ($user->isAdmin()) {
             $summary = [
                 'users'    => User::count(),
-                'students' => Student::where('archived', 0)->count(),
+                'students' => Student::count(),
                 'teachers' => Teacher::count(),
                 'classes'  => SchoolClass::count(),
                 'subjects' => Subject::count(),
             ];
 
-            $latestStudents = Student::where('archived', 0)
-                ->with('schoolClass')
+            $latestStudents = Student::with('schoolClass')
                 ->latest()
                 ->take(5)
                 ->get();

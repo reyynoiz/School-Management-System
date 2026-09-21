@@ -19,7 +19,7 @@ class StudentController extends Controller
 
     public function data(): JsonResponse
     {
-        $students = Student::where('archived', 0)->with('schoolClass')->orderBy('name')->get();
+        $students = Student::with('schoolClass')->orderBy('name')->get();
 
         $data = $students->map(function ($student, $index) {
             return [
