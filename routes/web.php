@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TeacherController;
+use App\Http\Controllers\ClassController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -24,6 +25,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('teachers/data', [TeacherController::class, 'data'])->name('teachers.data');
     Route::resource('teachers', TeacherController::class);
+    Route::get('classes/data', [ClassController::class, 'data'])->name('classes.data');
+    Route::resource('classes', ClassController::class);
+
 });
 
 require __DIR__.'/auth.php';

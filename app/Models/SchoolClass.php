@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HasArchive;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -13,6 +14,7 @@ class SchoolClass extends Model
     protected $fillable = [
         'name',
         'level',
+        'archived',
     ];
 
     //Menyiapkan hubungan antara model SchoolClass dan model Student
