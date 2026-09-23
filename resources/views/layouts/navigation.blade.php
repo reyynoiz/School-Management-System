@@ -24,6 +24,9 @@
                     <x-nav-link :href="route('classes.index')" :active="request()->routeIs('classes.*')">
                         {{ __('Classes') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('subjects.index')" :active="request()->routeIs('subjects.*')">
+                        {{ __('Subjects') }}
+                    </x-nav-link>
                 </div>
 
             <!-- Settings Dropdown -->
@@ -85,6 +88,9 @@
     </x-responsive-nav-link>
     <x-responsive-nav-link :href="route('classes.index')" :active="request()->routeIs('classes.*')">
         {{ __('Classes') }}
+    </x-responsive-nav-link>
+    <x-responsive-nav-link :href="route('subjects.index')" :active="request()->routeIs('subjects.*')">
+    {{ __('Subjects') }}
     </x-responsive-nav-link>
 </div>
 

@@ -5,6 +5,7 @@ use App\Http\Controllers\StudentController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\ClassController;
+use App\Http\Controllers\SubjectController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -27,6 +28,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('teachers', TeacherController::class);
     Route::get('classes/data', [ClassController::class, 'data'])->name('classes.data');
     Route::resource('classes', ClassController::class);
+    Route::get('subjects/data', [SubjectController::class, 'data'])->name('subjects.data');
+    Route::resource('subjects', SubjectController::class);
 
 });
 
