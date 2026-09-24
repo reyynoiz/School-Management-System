@@ -27,7 +27,7 @@ class StudentRequest extends FormRequest
             'nis'      => 'required|string|max:30|unique:tbl_students,nis' . ($studentId ? ',' . $studentId : ''),
             'name'     => 'required|string|max:255',
             'gender'   => 'required|in:L,P',
-            'class_id' => 'nullable|exists:tbl_classes,id',
+            'class_id' => 'required|exists:tbl_classes,id',
         ];
     }
     public function messages(): array
@@ -37,6 +37,7 @@ class StudentRequest extends FormRequest
             'nis.unique'      => 'NIS sudah digunakan.',
             'name.required'   => 'Nama wajib diisi.',
             'gender.required' => 'Jenis kelamin wajib dipilih.',
+            'class_id.required' => 'Kelas wajib dipilih.',
         ];
     }
 }

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class SchoolClass extends Model
 {
-    use HasFactory;
+    use HasFactory, HasArchive;
     //Menampilkan nama tabel yang digunakan oleh model ini
     protected $table = 'tbl_classes';
     protected $fillable = [

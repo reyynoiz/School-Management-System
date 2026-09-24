@@ -34,10 +34,11 @@
                             <option value="P" {{ old('gender') === 'P' ? 'selected' : '' }}>Perempuan</option>
                         </select>
                         @error('gender') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
+                        <p class="text-xs text-gray-400 mt-1">Silakan pilih gender.</p>
                     </div>
 
                     <div class="mb-6">
-                        <label for="class_id" class="block text-sm font-medium text-gray-700">Kelas</label>
+                        <label for="class_id" class="block text-sm font-medium text-gray-700">Kelas<span class="text-red-500">*</span></label>
                         <select name="class_id" id="class_id"
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                             <option value="">-- Pilih Kelas --</option>
@@ -46,7 +47,7 @@
                             @endforeach
                         </select>
                         @error('class_id') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
-                        <p class="text-xs text-gray-400 mt-1">Kelas boleh dikosongkan dan diisi belakangan setelah modul Kelas dibuat.</p>
+                        <p class="text-xs text-gray-400 mt-1">Silakan pilih kelas yang tersedia.</p>
                     </div>
 
                     <div class="flex gap-2">
