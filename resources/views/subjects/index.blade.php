@@ -7,6 +7,7 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <x-breadcrumb :items="['Subjects' => null]" />
 
             @if (session('success'))
                 <div class="mb-4 bg-green-100 border border-green-300 text-green-700 px-4 py-3 rounded">
@@ -17,9 +18,11 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="font-semibold text-gray-800">Daftar Mata Pelajaran</h3>
-                    <a href="{{ route('subjects.create') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-4 py-2 rounded">
-                        + Tambah Mata Pelajaran
-                    </a>
+                    @if (Auth::user()->isAdmin())
+                        <a href="{{ route('subjects.create') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-4 py-2 rounded">
+                            + Tambah Mata Pelajaran
+                        </a>
+                    @endif
                 </div>
 
                 <div class="overflow-x-auto">
@@ -29,7 +32,9 @@
                                 <th class="py-2 pr-4">No.</th>
                                 <th class="py-2 pr-4">Kode</th>
                                 <th class="py-2 pr-4">Nama Mata Pelajaran</th>
-                                <th class="py-2 pr-4">Aksi</th>
+                                @if (Auth::user()->isAdmin())
+                                    <th class="py-2 pr-4">Aksi</th>
+                                @endif
                             </tr>
                         </thead>
                     </table>
@@ -45,18 +50,25 @@
     <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
     <script>
     $(function () {
-        var table = $('#subjects-table').DataTable({
+        var isAdmin = @json(Auth::user()->isAdmin());
+
+        var columns = [
+            { data: 'no' },
+            { data: 'code' },
+            { data: 'name' },
+        ];
+
+        if (isAdmin) {
+            columns.push({
+                data: null, orderable: false, searchable: false,
+                render: row => '<a href="' + row.edit_url + '" class="text-indigo-600 hover:underline mr-3">Edit</a>' +
+                    '<button type="button" class="text-red-600 hover:underline btn-delete" data-id="' + row.id + '">Hapus</button>'
+            });
+        }
+
+        $('#subjects-table').DataTable({
             ajax: { url: "{{ route('subjects.data') }}", dataSrc: 'data' },
-            columns: [
-                { data: 'no' },
-                { data: 'code' },
-                { data: 'name' },
-                {
-                    data: null, orderable: false, searchable: false,
-                    render: row => '<a href="' + row.edit_url + '" class="text-indigo-600 hover:underline mr-3">Edit</a>' +
-                        '<button type="button" class="text-red-600 hover:underline btn-delete" data-id="' + row.id + '">Hapus</button>'
-                }
-            ],
+            columns: columns,
             language: {
                 emptyTable: 'Belum ada data mata pelajaran.', zeroRecords: 'Data tidak ditemukan.',
                 search: 'Cari:', lengthMenu: 'Tampilkan _MENU_ data',

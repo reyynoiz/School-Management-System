@@ -7,6 +7,7 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <x-breadcrumb :items="['Teachers' => null]" />
 
             @if (session('success'))
                 <div class="mb-4 bg-green-100 border border-green-300 text-green-700 px-4 py-3 rounded">
@@ -17,9 +18,11 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="font-semibold text-gray-800">Daftar Guru</h3>
-                    <a href="{{ route('teachers.create') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-4 py-2 rounded">
-                        + Tambah Guru
-                    </a>
+                    @if (Auth::user()->isAdmin())
+                        <a href="{{ route('teachers.create') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-4 py-2 rounded">
+                            + Tambah Guru
+                        </a>
+                    @endif
                 </div>
 
                 <div class="overflow-x-auto">
@@ -31,7 +34,9 @@
                                 <th class="py-2 pr-4">Nama</th>
                                 <th class="py-2 pr-4">L/P</th>
                                 <th class="py-2 pr-4">Mata Pelajaran</th>
-                                <th class="py-2 pr-4">Aksi</th>
+                                @if (Auth::user()->isAdmin())
+                                    <th class="py-2 pr-4">Aksi</th>
+                                @endif
                             </tr>
                         </thead>
                     </table>
@@ -47,20 +52,27 @@
     <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
     <script>
     $(function () {
-        var table = $('#teachers-table').DataTable({
+        var isAdmin = @json(Auth::user()->isAdmin());
+
+        var columns = [
+            { data: 'no' },
+            { data: 'nip' },
+            { data: 'name' },
+            { data: 'gender' },
+            { data: 'subject_name' },
+        ];
+
+        if (isAdmin) {
+            columns.push({
+                data: null, orderable: false, searchable: false,
+                render: row => '<a href="' + row.edit_url + '" class="text-indigo-600 hover:underline mr-3">Edit</a>' +
+                    '<button type="button" class="text-red-600 hover:underline btn-delete" data-id="' + row.id + '">Hapus</button>'
+            });
+        }
+
+        $('#teachers-table').DataTable({
             ajax: { url: "{{ route('teachers.data') }}", dataSrc: 'data' },
-            columns: [
-                { data: 'no' },
-                { data: 'nip' },
-                { data: 'name' },
-                { data: 'gender' },
-                { data: 'subject_name' },
-                {
-                    data: null, orderable: false, searchable: false,
-                    render: row => '<a href="' + row.edit_url + '" class="text-indigo-600 hover:underline mr-3">Edit</a>' +
-                        '<button type="button" class="text-red-600 hover:underline btn-delete" data-id="' + row.id + '">Hapus</button>'
-                }
-            ],
+            columns: columns,
             language: {
                 emptyTable: 'Belum ada data guru.', zeroRecords: 'Data tidak ditemukan.',
                 search: 'Cari:', lengthMenu: 'Tampilkan _MENU_ data',

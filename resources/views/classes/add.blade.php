@@ -7,6 +7,7 @@
 
     <div class="py-12">
         <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
+            <x-breadcrumb :items="['Classes' => route('classes.index'), 'Add' => null]" />
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                 <form method="POST" action="{{ route('classes.store') }}">
                     @csrf
