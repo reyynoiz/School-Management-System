@@ -24,19 +24,34 @@
             <!-- Main Layout Wrapper (Otomatis geser saat sidebar dibuka/ditutup) -->
             <div class="flex-1 flex flex-col min-w-0 transition-all duration-300" :class="open ? 'ml-64' : 'ml-0'">
                 
-                <!-- Header Atas (Tempat Tombol Buka Menu Sidebar) -->
-                <header class="bg-white border-b border-gray-100 h-16 flex items-center px-4 sm:px-6">
-                    <button @click="open = !open" class="p-2 rounded-lg text-gray-500 hover:text-gray-700 hover:bg-gray-100 focus:outline-none transition">
-                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                        </svg>
-                    </button>
-                    
-                    @isset($header)
-                        <div class="ml-4 font-semibold text-xl text-gray-800 leading-tight">
-                            {{ $header }}
+                <!-- Header Atas (Tempat Tombol Buka Menu Sidebar & Info User Kanan) -->
+                <header class="bg-white border-b border-gray-100 h-16 flex items-center justify-between px-4 sm:px-6">
+                    <!-- Sisi Kiri: Tombol Hamburger + Judul Halaman -->
+                    <div class="flex items-center">
+                        <button @click="open = !open" class="p-2 rounded-lg text-gray-500 hover:text-gray-700 hover:bg-gray-100 focus:outline-none transition">
+                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                            </svg>
+                        </button>
+                        
+                        @isset($header)
+                            <div class="ml-4 font-semibold text-xl text-gray-800 leading-tight">
+                                {{ $header }}
+                            </div>
+                        @endisset
+                    </div>
+
+                    <!-- Sisi Kanan: Info User & Avatar -->
+                    <div class="flex items-center gap-3">
+                        <div class="text-right hidden sm:block">
+                            <div class="font-medium text-sm text-gray-800 leading-tight">{{ Auth::user()->name }}</div>
+                            <div class="text-xs text-gray-500 truncate">{{ Auth::user()->email }}</div>
                         </div>
-                    @endisset
+                        <!-- Avatar Inisial -->
+                        <img class="h-9 w-9 rounded-full object-cover border border-gray-200" 
+                            src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&color=7F9CF5&background=EBF4FF" 
+                            alt="{{ Auth::user()->name }}">
+                    </div>
                 </header>
 
                 <!-- Page Content -->

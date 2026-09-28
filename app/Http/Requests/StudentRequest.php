@@ -22,22 +22,25 @@ class StudentRequest extends FormRequest
     public function rules(): array
     {
         $studentId = $this->route('student');
+
         return [
-            //
             'nis'      => 'required|string|max:30|unique:tbl_students,nis' . ($studentId ? ',' . $studentId : ''),
             'name'     => 'required|string|max:255',
             'gender'   => 'required|in:L,P',
             'class_id' => 'required|exists:tbl_classes,id',
+            'user_id'  => 'nullable|exists:tbl_users,id|unique:tbl_students,user_id' . ($studentId ? ',' . $studentId : ''),
         ];
     }
+
     public function messages(): array
     {
         return [
-            'nis.required'    => 'NIS wajib diisi.',
-            'nis.unique'      => 'NIS sudah digunakan.',
-            'name.required'   => 'Nama wajib diisi.',
-            'gender.required' => 'Jenis kelamin wajib dipilih.',
+            'nis.required'      => 'NIS wajib diisi.',
+            'nis.unique'        => 'NIS sudah digunakan.',
+            'name.required'     => 'Nama wajib diisi.',
+            'gender.required'   => 'Jenis kelamin wajib dipilih.',
             'class_id.required' => 'Kelas wajib dipilih.',
+            'user_id.unique'    => 'Akun ini sudah terhubung dengan data siswa lain.',
         ];
     }
 }

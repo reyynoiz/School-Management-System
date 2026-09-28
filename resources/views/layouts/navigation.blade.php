@@ -44,22 +44,16 @@
         </nav>
     </div>
 
-    <!-- User Info & Logout -->
-    <div class="p-4 border-t border-gray-100 bg-gray-50/50">
-        <div class="mb-3 px-2">
-            <div class="font-medium text-sm text-gray-800">{{ Auth::user()->name }}</div>
-            <div class="font-medium text-xs text-gray-500 truncate">{{ Auth::user()->email }}</div>
-        </div>
-        <div class="space-y-1">
-            <x-responsive-nav-link :href="route('profile.edit')" class="rounded-lg py-1.5">
-                {{ __('Profile') }}
+    <!-- Bagian Bawah Sidebar (Hanya Profile & Logout) -->
+    <div class="p-4 border-t border-gray-100 bg-gray-50/50 space-y-1">
+        <x-responsive-nav-link :href="route('profile.edit')" class="rounded-lg py-1.5">
+            {{ __('Profile') }}
+        </x-responsive-nav-link>
+        <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <x-responsive-nav-link :href="route('logout')" onclick="event.preventDefault(); this.closest('form').submit();" class="rounded-lg py-1.5 text-red-600 hover:text-red-700">
+                {{ __('Log Out') }}
             </x-responsive-nav-link>
-            <form method="POST" action="{{ route('logout') }}">
-                @csrf
-                <x-responsive-nav-link :href="route('logout')" onclick="event.preventDefault(); this.closest('form').submit();" class="rounded-lg py-1.5 text-red-600 hover:text-red-700">
-                    {{ __('Log Out') }}
-                </x-responsive-nav-link>
-            </form>
-        </div>
+        </form>
     </div>
 </aside>

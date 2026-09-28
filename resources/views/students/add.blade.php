@@ -38,8 +38,8 @@
                         <p class="text-xs text-gray-400 mt-1">Silakan pilih gender.</p>
                     </div>
 
-                    <div class="mb-6">
-                        <label for="class_id" class="block text-sm font-medium text-gray-700">Kelas<span class="text-red-500">*</span></label>
+                    <div class="mb-4">
+                        <label for="class_id" class="block text-sm font-medium text-gray-700">Kelas <span class="text-red-500">*</span></label>
                         <select name="class_id" id="class_id"
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                             <option value="">-- Pilih Kelas --</option>
@@ -49,6 +49,21 @@
                         </select>
                         @error('class_id') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
                         <p class="text-xs text-gray-400 mt-1">Silakan pilih kelas yang tersedia.</p>
+                    </div>
+
+                    <div class="mb-6">
+                        <label for="user_id" class="block text-sm font-medium text-gray-700">Akun Login</label>
+                        <select name="user_id" id="user_id"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                            <option value="">-- Tidak dihubungkan --</option>
+                            @foreach ($users as $user)
+                                <option value="{{ $user->id }}" {{ old('user_id') == $user->id ? 'selected' : '' }}>
+                                    {{ $user->name }} ({{ $user->email }})
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('user_id') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
+                        <p class="text-xs text-gray-400 mt-1">Hubungkan agar siswa ini bisa melihat profilnya setelah login.</p>
                     </div>
 
                     <div class="flex gap-2">

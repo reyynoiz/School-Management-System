@@ -1,17 +1,17 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Http\Requests\StudentRequest;
 use App\Models\SchoolClass;
 use App\Models\Student;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
-use Illuminate\Http\Request;
 
 class StudentController extends Controller
 {
-    //
     public function index(): View
     {
         return view('students.index');
@@ -40,8 +40,12 @@ class StudentController extends Controller
     public function create(): View
     {
         $classes = SchoolClass::orderBy('name')->get();
+        $users = User::where('role', 'student')
+            ->whereDoesntHave('student')
+            ->orderBy('name')
+            ->get();
 
-        return view('students.add', compact('classes'));
+        return view('students.add', compact('classes', 'users'));
     }
 
     public function store(StudentRequest $request): RedirectResponse
@@ -55,8 +59,15 @@ class StudentController extends Controller
     {
         $student = Student::findOrFail($id);
         $classes = SchoolClass::orderBy('name')->get();
+        $users = User::where('role', 'student')
+            ->where(function ($query) use ($student) {
+                $query->whereDoesntHave('student')
+                      ->orWhere('id', $student->user_id);
+            })
+            ->orderBy('name')
+            ->get();
 
-        return view('students.edit', compact('student', 'classes'));
+        return view('students.edit', compact('student', 'classes', 'users'));
     }
 
     public function update(StudentRequest $request, $id): RedirectResponse
