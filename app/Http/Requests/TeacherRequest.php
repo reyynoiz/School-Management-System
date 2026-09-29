@@ -24,11 +24,11 @@ class TeacherRequest extends FormRequest
         $teacherId = $this->route('teacher');
 
         return [
-            //
             'nip'        => 'required|string|max:30|unique:tbl_teachers,nip' . ($teacherId ? ',' . $teacherId : ''),
             'name'       => 'required|string|max:255',
             'gender'     => 'required|in:L,P',
             'subject_id' => 'nullable|exists:tbl_subjects,id',
+            'user_id'    => 'nullable|exists:tbl_users,id|unique:tbl_teachers,user_id' . ($teacherId ? ',' . $teacherId : ''),
         ];
     }
     public function messages(): array
@@ -38,6 +38,7 @@ class TeacherRequest extends FormRequest
             'nip.unique'      => 'NIP sudah digunakan.',
             'name.required'   => 'Nama wajib diisi.',
             'gender.required' => 'Jenis kelamin wajib dipilih.',
+            'user_id.unique' => 'Akun ini sudah terhubung dengan data guru lain.',
         ];
     }
 }

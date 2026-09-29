@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\TeacherRequest;
 use App\Models\Subject;
 use App\Models\Teacher;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
@@ -41,8 +42,12 @@ class TeacherController extends Controller
     public function create(): View
     {
         $subjects = Subject::orderBy('name')->get();
+        $users = User::where('role', 'teacher')
+            ->whereDoesntHave('teacher')
+            ->orderBy('name')
+            ->get();
 
-        return view('teachers.add', compact('subjects'));
+        return view('teachers.add', compact('subjects', 'users'));
     }
 
     public function store(TeacherRequest $request): RedirectResponse
@@ -56,8 +61,15 @@ class TeacherController extends Controller
     {
         $teacher = Teacher::findOrFail($id);
         $subjects = Subject::orderBy('name')->get();
+        $users = User::where('role', 'teacher')
+            ->where(function ($query) use ($teacher) {
+                $query->whereDoesntHave('teacher')
+                    ->orWhere('id', $teacher->user_id);
+            })
+            ->orderBy('name')
+            ->get();
 
-        return view('teachers.edit', compact('teacher', 'subjects'));
+        return view('teachers.edit', compact('teacher', 'subjects', 'users'));
     }
 
     public function update(TeacherRequest $request, int $id): RedirectResponse

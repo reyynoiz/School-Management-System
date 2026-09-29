@@ -50,6 +50,21 @@
                         <p class="text-xs text-gray-400 mt-1">Mata pelajaran boleh dikosongkan dan diisi belakangan setelah modul Subjects dibuat.</p>
                     </div>
 
+                    <div class="mb-6">
+                        <label for="user_id" class="block text-sm font-medium text-gray-700">Akun Login</label>
+                        <select name="user_id" id="user_id"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                            <option value="">-- Tidak dihubungkan --</option>
+                            @foreach ($users as $user)
+                                <option value="{{ $user->id }}" {{ old('user_id') == $user->id ? 'selected' : '' }}>
+                                    {{ $user->name }} ({{ $user->email }})
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('user_id') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
+                        <p class="text-xs text-gray-400 mt-1">Hubungkan agar guru ini bisa melihat profilnya setelah login.</p>
+                    </div>
+
                     <div class="flex gap-2">
                         <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-5 py-2 rounded">Simpan</button>
                         <a href="{{ route('teachers.index') }}" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium px-5 py-2 rounded">Batal</a>
