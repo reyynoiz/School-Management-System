@@ -9,7 +9,7 @@
         <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
             <x-breadcrumb :items="['Teachers' => route('teachers.index'), 'Edit' => null]" />
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                <form method="POST" action="{{ route('teachers.update', $teacher->id) }}">
+                <form method="POST" action="{{ route('teachers.update', $teacher->id) }}" novalidate>
                     @csrf
                     @method('PUT')
 

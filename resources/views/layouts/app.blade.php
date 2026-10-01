@@ -48,7 +48,7 @@
                         @endisset
                     </div>
 
-                    <div class="flex items-center gap-3">
+                    <a href="{{ route('profile.edit') }}" class="flex items-center gap-3 hover:opacity-80 transition">
                         <div class="text-right hidden sm:block">
                             <div class="font-medium text-sm text-gray-800 leading-tight">{{ Auth::user()->name }}</div>
                             <div class="text-xs text-gray-500 truncate">{{ Auth::user()->email }}</div>
@@ -56,7 +56,7 @@
                         <img class="h-9 w-9 rounded-full object-cover border border-gray-200"
                             src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&color=7F9CF5&background=EBF4FF"
                             alt="{{ Auth::user()->name }}">
-                    </div>
+                    </a>
                 </header>
 
                 <main class="flex-1 p-3 sm:p-6">

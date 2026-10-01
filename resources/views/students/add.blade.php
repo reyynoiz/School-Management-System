@@ -10,25 +10,25 @@
             <x-breadcrumb :items="['Students' => route('students.index'), 'Add' => null]" />
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                 <form method="POST" action="{{ route('students.store') }}">
-                    @csrf
+                     @csrf
 
                     <div class="mb-4">
                         <label for="nis" class="block text-sm font-medium text-gray-700">NIS <span class="text-red-500">*</span></label>
-                        <input type="text" name="nis" id="nis" placeholder="Masukkan NIS siswa" value="{{ old('nis') }}" autofocus required
-                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <input type="text" name="nis" id="nis" placeholder="Masukkan NIS siswa" value="{{ old('nis') }}" autofocus
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                         @error('nis') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
                     </div>
 
                     <div class="mb-4">
                         <label for="name" class="block text-sm font-medium text-gray-700">Nama Lengkap <span class="text-red-500">*</span></label>
-                        <input type="text" name="name" id="name" placeholder="Masukkan nama lengkap siswa" value="{{ old('name') }}" required
-                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <input type="text" name="name" id="name" placeholder="Masukkan nama lengkap siswa" value="{{ old('name') }}"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                         @error('name') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
                     </div>
 
                     <div class="mb-4">
                         <label for="gender" class="block text-sm font-medium text-gray-700">Jenis Kelamin <span class="text-red-500">*</span></label>
-                        <select name="gender" id="gender" required
+                        <select name="gender" id="gender"
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                             <option value="">-- Pilih Jenis Kelamin --</option>
                             <option value="L" {{ old('gender') === 'L' ? 'selected' : '' }}>Laki-laki</option>

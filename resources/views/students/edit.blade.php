@@ -9,7 +9,7 @@
         <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
             <x-breadcrumb :items="['Students' => route('students.index'), 'Edit' => null]" />
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                <form method="POST" action="{{ route('students.update', $student->id) }}">
+                <form method="POST" action="{{ route('students.update', $student->id) }}" novalidate>
                     @csrf
                     @method('PUT')
 
@@ -19,7 +19,7 @@
                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                         @error('nis') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
                     </div>
-
+                    
                     <div class="mb-4">
                         <label for="name" class="block text-sm font-medium text-gray-700">Nama Lengkap <span class="text-red-500">*</span></label>
                         <input type="text" name="name" id="name" placeholder="Masukkan nama lengkap siswa" value="{{ old('name', $student->name) }}"

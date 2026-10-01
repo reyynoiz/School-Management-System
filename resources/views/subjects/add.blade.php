@@ -9,19 +9,19 @@
         <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
             <x-breadcrumb :items="['Subjects' => route('subjects.index'), 'Add' => null]" />
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                <form method="POST" action="{{ route('subjects.store') }}">
+                <form method="POST" action="{{ route('subjects.store') }}" novalidate>
                     @csrf
 
                     <div class="mb-4">
                         <label for="code" class="block text-sm font-medium text-gray-700">Kode Mapel <span class="text-red-500">*</span></label>
-                        <input type="text" name="code" id="code" placeholder="Contoh: MTK-01" value="{{ old('code') }}" autofocus required
+                        <input type="text" name="code" id="code" placeholder="Contoh: MTK-01" value="{{ old('code') }}" autofocus
                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                         @error('code') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
                     </div>
 
                     <div class="mb-6">
                         <label for="name" class="block text-sm font-medium text-gray-700">Nama Mata Pelajaran <span class="text-red-500">*</span></label>
-                        <input type="text" name="name" id="name" placeholder="Contoh: Matematika" value="{{ old('name') }}" required
+                        <input type="text" name="name" id="name" placeholder="Contoh: Matematika" value="{{ old('name') }}"
                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                         @error('name') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
                     </div>

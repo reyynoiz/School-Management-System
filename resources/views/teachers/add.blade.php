@@ -9,26 +9,26 @@
         <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
             <x-breadcrumb :items="['Teachers' => route('teachers.index'), 'Add' => null]" />
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                <form method="POST" action="{{ route('teachers.store') }}">
+                <form method="POST" action="{{ route('teachers.store') }}" novalidate>
                     @csrf
 
                     <div class="mb-4">
                         <label for="nip" class="block text-sm font-medium text-gray-700">NIP <span class="text-red-500">*</span></label>
-                        <input type="text" name="nip" id="nip" placeholder="Masukkan NIP guru" value="{{ old('nip') }}" autofocus required
-                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <input type="text" name="nip" id="nip" placeholder="Masukkan NIP guru" value="{{ old('nip') }}" autofocus
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                         @error('nip') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
                     </div>
 
                     <div class="mb-4">
                         <label for="name" class="block text-sm font-medium text-gray-700">Nama Lengkap <span class="text-red-500">*</span></label>
-                        <input type="text" name="name" id="name" placeholder="Masukkan nama lengkap guru" value="{{ old('name') }}" required
-                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <input type="text" name="name" id="name" placeholder="Masukkan nama lengkap guru" value="{{ old('name') }}"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                         @error('name') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
                     </div>
 
                     <div class="mb-4">
                         <label for="gender" class="block text-sm font-medium text-gray-700">Jenis Kelamin <span class="text-red-500">*</span></label>
-                        <select name="gender" id="gender" required
+                        <select name="gender" id="gender"
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                             <option value="">-- Pilih Jenis Kelamin --</option>
                             <option value="L" {{ old('gender') === 'L' ? 'selected' : '' }}>Laki-laki</option>
@@ -37,7 +37,7 @@
                         @error('gender') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
                     </div>
 
-                    <div class="mb-6">
+                    <div class="mb-4">
                         <label for="subject_id" class="block text-sm font-medium text-gray-700">Mata Pelajaran</label>
                         <select name="subject_id" id="subject_id"
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
