@@ -1,0 +1,29 @@
+table.dataTable { width: 100% !important; }
+
+.dataTables_wrapper .dataTables_info { white-space: normal; }
+.dataTables_wrapper .dataTables_paginate .paginate_button { padding: .25em .6em; }
+
+@media (max-width: 640px) {
+    .dataTables_wrapper .dataTables_length,
+    .dataTables_wrapper .dataTables_filter,
+    .dataTables_wrapper .dataTables_info {
+        float: none;
+        text-align: left;
+        margin-bottom: .5rem;
+    }
+    .dataTables_wrapper .dataTables_filter label { display: block; }
+    .dataTables_wrapper .dataTables_filter input {
+        display: block;
+        width: 100%;
+        margin: .25rem 0 0;
+        box-sizing: border-box;
+    }
+    .dataTables_wrapper .dataTables_paginate {
+        float: none;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: .25rem;
+        margin-top: .5rem;
+    }
+}

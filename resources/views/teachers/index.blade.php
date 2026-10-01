@@ -5,8 +5,9 @@
         </h2>
     </x-slot>
 
-    <div class="py-12">
+    <div class="py-4 sm:py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+
             <x-breadcrumb :items="['Teachers' => null]" />
 
             @if (session('success'))
@@ -46,31 +47,39 @@
         </div>
     </div>
 
+    @push('styles')
+        <link href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css" rel="stylesheet">
+        <link href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css" rel="stylesheet">
+        <link href="{{ asset('css/datatables-custom.css') }}" rel="stylesheet">
+    @endpush
+
     @push('scripts')
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <link href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css" rel="stylesheet">
     <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
     <script>
     $(function () {
         var isAdmin = @json(Auth::user()->isAdmin());
 
         var columns = [
-            { data: 'no' },
-            { data: 'nip' },
-            { data: 'name' },
-            { data: 'gender' },
-            { data: 'subject_name' },
+            { data: 'no', responsivePriority: 4 },
+            { data: 'nip', responsivePriority: 3 },
+            { data: 'name', responsivePriority: 1 },
+            { data: 'gender', responsivePriority: 6 },
+            { data: 'subject_name', responsivePriority: 5 },
         ];
 
         if (isAdmin) {
             columns.push({
-                data: null, orderable: false, searchable: false,
+                data: null, orderable: false, searchable: false, responsivePriority: 2,
                 render: row => '<a href="' + row.edit_url + '" class="text-indigo-600 hover:underline mr-3">Edit</a>' +
                     '<button type="button" class="text-red-600 hover:underline btn-delete" data-id="' + row.id + '">Hapus</button>'
             });
         }
 
         $('#teachers-table').DataTable({
+            responsive: true,
+            autoWidth: false,
             ajax: { url: "{{ route('teachers.data') }}", dataSrc: 'data' },
             columns: columns,
             language: {
