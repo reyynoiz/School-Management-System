@@ -31,6 +31,7 @@ class TeacherController extends Controller
                 'name'         => $teacher->name,
                 'gender'       => $teacher->gender === 'L' ? 'Laki-laki' : 'Perempuan',
                 'subject_name' => $teacher->subject->name ?? '-',
+                'created_at'   => formatTanggalIndo($teacher->created_at),
                 'edit_url'     => route('teachers.edit', $teacher->id),
                 'delete_url'   => route('teachers.destroy', $teacher->id),
             ];

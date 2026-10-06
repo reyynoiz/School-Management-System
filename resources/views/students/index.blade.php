@@ -35,6 +35,7 @@
                                 <th class="py-2 pr-4">Nama</th>
                                 <th class="py-2 pr-4">L/P</th>
                                 <th class="py-2 pr-4">Kelas</th>
+                                <th class="py-2 pr-4">Terdaftar</th>
                                 @if (Auth::user()->isAdmin())
                                     <th class="py-2 pr-4">Aksi</th>
                                 @endif
@@ -67,6 +68,7 @@
             { data: 'name', responsivePriority: 1 },
             { data: 'gender', responsivePriority: 6 },
             { data: 'class_name', responsivePriority: 5 },
+            { data: 'created_at', responsivePriority: 7 },
         ];
 
         if (isAdmin) {

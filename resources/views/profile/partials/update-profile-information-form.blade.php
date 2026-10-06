@@ -13,25 +13,37 @@
         @csrf
     </form>
 
-    <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6">
+    <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6" enctype="multipart/form-data" novalidate>
         @csrf
         @method('patch')
 
         <div>
+            <x-input-label for="photo" :value="__('Foto Profil')" />
+            <div class="mt-2 flex items-center gap-4">
+                <img class="h-16 w-16 rounded-full object-cover object-center border border-gray-200"
+                    src="{{ $user->img_url ? asset('storage/' . $user->img_url) : 'https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&color=7F9CF5&background=EBF4FF' }}"
+                    alt="{{ $user->name }}">
+                <input type="file" name="photo" id="photo" accept="image/jpeg,image/png,image/jpg" class="block text-sm text-gray-600">
+            </div>
+            <p class="text-xs text-gray-400 mt-1">Format JPG atau PNG, maksimal 2 MB.</p>
+            <x-input-error class="mt-2" :messages="$errors->get('photo')" />
+        </div>
+
+        <div>
             <x-input-label for="name" :value="__('Name')" />
-            <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name', $user->name)" required autofocus autocomplete="name" />
+            <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name', $user->name)" autofocus autocomplete="name" />
             <x-input-error class="mt-2" :messages="$errors->get('name')" />
         </div>
 
         <div>
             <x-input-label for="username" :value="__('Username')" />
-            <x-text-input id="username" name="username" type="text" class="mt-1 block w-full" :value="old('username', $user->username)" required autocomplete="username" />
+            <x-text-input id="username" name="username" type="text" class="mt-1 block w-full" :value="old('username', $user->username)" autocomplete="username" />
             <x-input-error class="mt-2" :messages="$errors->get('username')" />
         </div>
 
         <div>
             <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $user->email)" required autocomplete="username" />
+            <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $user->email)" autocomplete="username" />
             <x-input-error class="mt-2" :messages="$errors->get('email')" />
 
             @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
@@ -69,13 +81,9 @@
             <x-primary-button>{{ __('Save') }}</x-primary-button>
 
             @if (session('status') === 'profile-updated')
-                <p
-                    x-data="{ show: true }"
-                    x-show="show"
-                    x-transition
-                    x-init="setTimeout(() => show = false, 2000)"
-                    class="text-sm text-gray-600"
-                >{{ __('Saved.') }}</p>
+                <div class="mb-4 bg-green-100 border border-green-300 text-green-700 px-4 py-3 rounded">
+                    Profil berhasil diperbarui.
+                </div>
             @endif
         </div>
     </form>

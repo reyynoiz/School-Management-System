@@ -27,6 +27,7 @@ class ClassController extends Controller
                 'id'         => $class->id,
                 'name'       => $class->name,
                 'level'      => $class->level,
+                'created_at' => formatTanggalIndo($class->created_at),
                 'edit_url'   => route('classes.edit', $class->id),
                 'delete_url' => route('classes.destroy', $class->id),
             ];

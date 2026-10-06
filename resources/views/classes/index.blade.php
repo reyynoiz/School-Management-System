@@ -33,6 +33,7 @@
                                 <th class="py-2 pr-4">No.</th>
                                 <th class="py-2 pr-4">Nama Kelas</th>
                                 <th class="py-2 pr-4">Tingkat</th>
+                                <th class="py-2 pr-4">Terdaftar</th>
                                 @if (Auth::user()->isAdmin())
                                     <th class="py-2 pr-4">Aksi</th>
                                 @endif
@@ -63,6 +64,7 @@
             { data: 'no', responsivePriority: 4 },
             { data: 'name', responsivePriority: 1 },
             { data: 'level', responsivePriority: 3 },
+            { data: 'created_at', responsivePriority: 5 },
         ];
 
         if (isAdmin) {

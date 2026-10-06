@@ -27,6 +27,7 @@ class SubjectController extends Controller
                 'id'         => $subject->id,
                 'code'       => $subject->code,
                 'name'       => $subject->name,
+                'created_at' => formatTanggalIndo($subject->created_at),
                 'edit_url'   => route('subjects.edit', $subject->id),
                 'delete_url' => route('subjects.destroy', $subject->id),
             ];

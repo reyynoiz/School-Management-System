@@ -29,6 +29,7 @@ class StudentController extends Controller
                 'name'       => $student->name,
                 'gender'     => $student->gender === 'L' ? 'Laki-laki' : 'Perempuan',
                 'class_name' => $student->schoolClass->name ?? '-',
+                'created_at' => formatTanggalIndo($student->created_at),
                 'edit_url'   => route('students.edit', $student->id),
                 'delete_url' => route('students.destroy', $student->id),
             ];
