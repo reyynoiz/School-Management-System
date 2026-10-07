@@ -23,13 +23,23 @@ class DatabaseSeeder extends Seeder
                 'status' => 1,
             ]);
 
-            // Buat akun guru
-            User::create([
+        // Buat akun guru
+        User::create([
                 'name' => 'Guru Satu',
                 'username' => 'guru1',
                 'email' => 'guru@school.id',
                 'password' => bcrypt('guru123'),
                 'role' => 'teacher',
+                'status' => 1,
+            ]);
+
+        // Buat akun siswa
+        User::create([
+                'name' => 'Siswa Satu',
+                'username' => 'siswa1',
+                'email' => 'siswa@school.id',
+                'password' => bcrypt('siswa123'),
+                'role' => 'student',
                 'status' => 1,
             ]);
         }

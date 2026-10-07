@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\HasArchive;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Teacher extends Model
 {
-    use HasFactory;
+    use HasFactory, HasArchive;
     //Menampilkan nama tabel yang digunakan oleh model ini
     protected $table = 'tbl_teachers';
     protected $fillable = [
@@ -16,6 +17,7 @@ class Teacher extends Model
         'nip',
         'name',
         'gender',
+        'archived',
     ];
 
     //Menyiapkan hubungan antara model Teacher dan model User
