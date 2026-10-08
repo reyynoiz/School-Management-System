@@ -6,6 +6,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\TeacherController;
+use App\Http\Controllers\ArchiveController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -41,6 +42,10 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::resource('teachers', TeacherController::class)->except(['index']);
     Route::resource('classes', ClassController::class)->except(['index']);
     Route::resource('subjects', SubjectController::class)->except(['index']);
+    Route::get('archives', [ArchiveController::class, 'index'])->name('archives.index');
+    Route::get('archives/data', [ArchiveController::class, 'data'])->name('archives.data');
+    Route::post('archives/{type}/{id}/restore', [ArchiveController::class, 'restore'])->name('archives.restore');
+    Route::delete('archives/{type}/{id}', [ArchiveController::class, 'destroy'])->name('archives.destroy');
 });
 
 require __DIR__.'/auth.php';

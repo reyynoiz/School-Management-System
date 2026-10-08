@@ -53,7 +53,7 @@
                             <div class="font-medium text-sm text-gray-800 leading-tight">{{ Auth::user()->name }}</div>
                             <div class="text-xs text-gray-500 truncate">{{ Auth::user()->email }}</div>
                         </div>
-                        <<img class="h-9 w-9 rounded-full object-cover object-center border border-gray-200"
+                        <img class="h-9 w-9 rounded-full object-cover object-center border border-gray-200"
                             src="{{ Auth::user()->img_url ? asset('storage/' . Auth::user()->img_url) : 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name) . '&color=7F9CF5&background=EBF4FF' }}"
                             alt="{{ Auth::user()->name }}">
                     </a>

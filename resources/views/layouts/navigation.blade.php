@@ -42,6 +42,11 @@
             <x-responsive-nav-link :href="route('subjects.index')" :active="request()->routeIs('subjects.*')" class="rounded-lg">
                 {{ __('Subjects') }}
             </x-responsive-nav-link>
+            @if (Auth::user()->isAdmin())
+                <x-responsive-nav-link :href="route('archives.index')" :active="request()->routeIs('archives.*')" class="rounded-lg">
+                    {{ __('Archive') }}
+                </x-responsive-nav-link>
+            @endif
         </nav>
     </div>
 
