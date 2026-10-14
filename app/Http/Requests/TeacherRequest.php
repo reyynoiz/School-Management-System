@@ -29,6 +29,7 @@ class TeacherRequest extends FormRequest
             'gender'     => 'required|in:L,P',
             'subject_id' => 'nullable|exists:tbl_subjects,id',
             'user_id'    => 'nullable|exists:tbl_users,id|unique:tbl_teachers,user_id' . ($teacherId ? ',' . $teacherId : ''),
+            'photo'      => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
         ];
     }
     public function messages(): array
@@ -39,6 +40,9 @@ class TeacherRequest extends FormRequest
             'name.required'   => 'Nama wajib diisi.',
             'gender.required' => 'Jenis kelamin wajib dipilih.',
             'user_id.unique' => 'Akun ini sudah terhubung dengan data guru lain.',
+            'photo.image' => 'File harus berupa gambar.',
+            'photo.mimes' => 'Format foto harus JPG atau PNG.',
+            'photo.max'   => 'Ukuran foto maksimal 2 MB.',
         ];
     }
 }

@@ -6,22 +6,29 @@ use App\Http\Requests\TeacherRequest;
 use App\Models\Subject;
 use App\Models\Teacher;
 use App\Models\User;
+use App\Traits\HandlesPhotoUpload;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\View\View;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class TeacherController extends Controller
 {
-    //
+    use HandlesPhotoUpload;
     public function index(): View
     {
-        return view('teachers.index');
+        $subjects = Subject::orderBy('name')->get();
+
+        return view('teachers.index', compact('subjects'));
     }
 
-    public function data(): JsonResponse
+    public function data(Request $request): JsonResponse
     {
-        $teachers = Teacher::with('subject')->orderBy('name')->get();
+        $teachers = Teacher::with('subject')
+            ->when($request->filled('subject_id'), fn ($q) => $q->where('subject_id', $request->subject_id))
+            ->when($request->filled('gender'), fn ($q) => $q->where('gender', $request->gender))
+            ->orderBy('name')
+            ->get();
 
         $data = $teachers->map(function ($teacher, $index) {
             return [
@@ -31,6 +38,7 @@ class TeacherController extends Controller
                 'name'         => $teacher->name,
                 'gender'       => $teacher->gender === 'L' ? 'Laki-laki' : 'Perempuan',
                 'subject_name' => $teacher->subject->name ?? '-',
+                'photo_url'    => $teacher->photo ? asset('uploads/teachers/' . $teacher->photo) : null,
                 'created_at'   => formatTanggalIndo($teacher->created_at),
                 'edit_url'     => route('teachers.edit', $teacher->id),
                 'delete_url'   => route('teachers.destroy', $teacher->id),
@@ -53,7 +61,15 @@ class TeacherController extends Controller
 
     public function store(TeacherRequest $request): RedirectResponse
     {
-        Teacher::create($request->validated());
+        $data = $request->validated();
+
+        if ($request->hasFile('photo')) {
+            $data['photo'] = $this->storePhoto($request->file('photo'), 'teachers');
+        } else {
+            unset($data['photo']);
+        }
+
+        Teacher::create($data);
 
         return redirect()->route('teachers.index')->with('success', 'Data guru berhasil ditambahkan.');
     }
@@ -76,7 +92,17 @@ class TeacherController extends Controller
     public function update(TeacherRequest $request, int $id): RedirectResponse
     {
         $teacher = Teacher::findOrFail($id);
-        $teacher->update($request->validated());
+        $data = $request->validated();
+
+        if ($request->hasFile('photo')) {
+            $newPhoto = $this->storePhoto($request->file('photo'), 'teachers');
+            $this->deletePhoto($teacher->photo, 'teachers');
+            $data['photo'] = $newPhoto;
+        } else {
+            unset($data['photo']);
+        }
+
+        $teacher->update($data);
 
         return redirect()->route('teachers.index')->with('success', 'Data guru berhasil diperbarui.');
     }

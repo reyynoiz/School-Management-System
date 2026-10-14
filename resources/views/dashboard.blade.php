@@ -33,6 +33,23 @@
                     </div>
                 </div>
 
+                {{-- Grafik --}}
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                    <div class="lg:col-span-2 bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+                        <h3 class="font-semibold text-gray-800 mb-4">Jumlah Siswa per Kelas</h3>
+                        <div class="relative h-64">
+                            <canvas id="classChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+                        <h3 class="font-semibold text-gray-800 mb-4">Komposisi Gender</h3>
+                        <div class="relative h-64">
+                            <canvas id="genderChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6">
                         <div class="flex justify-between items-center mb-4">
@@ -118,4 +135,46 @@
 
         </div>
     </div>
+
+    @if (Auth::user()->isAdmin())
+        @push('scripts')
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+        <script>
+            new Chart(document.getElementById('classChart'), {
+                type: 'bar',
+                data: {
+                    labels: @json($classChart['labels']),
+                    datasets: [{
+                        label: 'Jumlah Siswa',
+                        data: @json($classChart['values']),
+                        backgroundColor: '#6366f1',
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+                }
+            });
+
+            new Chart(document.getElementById('genderChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: @json($genderChart['labels']),
+                    datasets: [{
+                        data: @json($genderChart['values']),
+                        backgroundColor: ['#3b82f6', '#ec4899']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom' } }
+                }
+            });
+        </script>
+        @endpush
+    @endif
 </x-app-layout>

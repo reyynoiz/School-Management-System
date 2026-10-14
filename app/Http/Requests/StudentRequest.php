@@ -29,6 +29,7 @@ class StudentRequest extends FormRequest
             'gender'   => 'required|in:L,P',
             'class_id' => 'required|exists:tbl_classes,id',
             'user_id'  => 'nullable|exists:tbl_users,id|unique:tbl_students,user_id' . ($studentId ? ',' . $studentId : ''),
+            'photo' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
         ];
     }
 
@@ -41,6 +42,9 @@ class StudentRequest extends FormRequest
             'gender.required'   => 'Jenis kelamin wajib dipilih.',
             'class_id.required' => 'Kelas wajib dipilih.',
             'user_id.unique'    => 'Akun ini sudah terhubung dengan data siswa lain.',
+            'photo.image' => 'File harus berupa gambar.',
+            'photo.mimes' => 'Format foto harus JPG atau PNG.',
+            'photo.max'   => 'Ukuran foto maksimal 2 MB.',
         ];
     }
 }

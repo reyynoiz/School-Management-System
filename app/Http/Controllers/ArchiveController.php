@@ -6,6 +6,7 @@ use App\Models\SchoolClass;
 use App\Models\Student;
 use App\Models\Subject;
 use App\Models\Teacher;
+use App\Traits\HandlesPhotoUpload;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -13,6 +14,7 @@ use Illuminate\View\View;
 
 class ArchiveController extends Controller
 {
+    use HandlesPhotoUpload;
     private const TYPES = [
         'students' => ['model' => Student::class,     'label' => 'Siswa',          'ident' => 'NIS'],
         'teachers' => ['model' => Teacher::class,     'label' => 'Guru',           'ident' => 'NIP'],
@@ -94,6 +96,11 @@ class ArchiveController extends Controller
         $meta = $this->resolve($type);
 
         $item = $meta['model']::withArchived()->where('archived', 1)->findOrFail($id);
+
+        if (in_array($type, ['students', 'teachers'], true)) {
+            $this->deletePhoto($item->photo, $type);
+        }
+
         $item->delete();
 
         return redirect()

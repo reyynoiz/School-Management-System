@@ -97,4 +97,22 @@ class StudentTest extends TestCase
             'archived' => 1,
         ]);
     }
+
+    /** @test */
+    public function student_data_can_be_filtered_by_class_and_gender()
+    {
+        $user = User::factory()->student()->create();
+        $classA = SchoolClass::create(['name' => 'X IPA 1', 'level' => 'X']);
+        $classB = SchoolClass::create(['name' => 'X IPA 2', 'level' => 'X']);
+
+        Student::create(['nis' => '1', 'name' => 'Andi', 'gender' => 'L', 'class_id' => $classA->id]);
+        Student::create(['nis' => '2', 'name' => 'Budi', 'gender' => 'L', 'class_id' => $classB->id]);
+        Student::create(['nis' => '3', 'name' => 'Citra', 'gender' => 'P', 'class_id' => $classA->id]);
+
+        $this->actingAs($user)
+            ->getJson(route('students.data', ['class_id' => $classA->id, 'gender' => 'L']))
+            ->assertOk()
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.name', 'Andi');
+    }
 }

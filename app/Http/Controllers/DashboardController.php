@@ -32,7 +32,21 @@ class DashboardController extends Controller
                 ->take(5)
                 ->get();
 
-            return view('dashboard', compact('summary', 'latestStudents'));
+            $classes = SchoolClass::withCount('students')->orderBy('name')->get();
+            $classChart = [
+                'labels' => $classes->pluck('name'),
+                'values' => $classes->pluck('students_count'),
+            ];
+
+            $gender = Student::selectRaw('gender, count(*) as total')
+                ->groupBy('gender')
+                ->pluck('total', 'gender');
+            $genderChart = [
+                'labels' => ['Laki-laki', 'Perempuan'],
+                'values' => [$gender['L'] ?? 0, $gender['P'] ?? 0],
+            ];
+
+            return view('dashboard', compact('summary', 'latestStudents', 'classChart', 'genderChart'));
         }
 
         if ($user->isTeacher()) {

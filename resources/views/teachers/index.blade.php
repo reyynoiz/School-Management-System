@@ -26,11 +26,37 @@
                     @endif
                 </div>
 
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
+                    <div>
+                        <label for="filter-subject" class="block text-xs font-medium text-gray-500 mb-1">Mata Pelajaran</label>
+                        <select id="filter-subject" class="block w-full rounded-md border-gray-300 shadow-sm text-sm focus:border-indigo-500 focus:ring-indigo-500">
+                            <option value="">Semua Mata Pelajaran</option>
+                            @foreach ($subjects as $subject)
+                                <option value="{{ $subject->id }}">{{ $subject->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div>
+                        <label for="filter-gender" class="block text-xs font-medium text-gray-500 mb-1">Jenis Kelamin</label>
+                        <select id="filter-gender" class="block w-full rounded-md border-gray-300 shadow-sm text-sm focus:border-indigo-500 focus:ring-indigo-500">
+                            <option value="">Semua</option>
+                            <option value="L">Laki-laki</option>
+                            <option value="P">Perempuan</option>
+                        </select>
+                    </div>
+                    <div class="flex items-end">
+                        <button type="button" id="filter-reset" class="bg-gray-200 hover:bg-gray-300 text-gray-700 text-sm font-medium px-4 py-2 rounded">
+                            Reset Filter
+                        </button>
+                    </div>
+                </div>
+
                 <div class="overflow-x-auto">
                     <table id="teachers-table" class="min-w-full text-sm w-full">
                         <thead>
                             <tr class="text-left text-xs uppercase text-gray-500 border-b">
                                 <th class="py-2 pr-4">No.</th>
+                                <th class="py-2 pr-4">Foto</th>
                                 <th class="py-2 pr-4">NIP</th>
                                 <th class="py-2 pr-4">Nama</th>
                                 <th class="py-2 pr-4">L/P</th>
@@ -64,6 +90,16 @@
 
         var columns = [
             { data: 'no', responsivePriority: 4 },
+            {
+                data: 'photo_url', orderable: false, searchable: false, responsivePriority: 8,
+                render: function (url, type, row) {
+                    if (url) {
+                        return '<img src="' + url + '" alt="" class="h-9 w-9 rounded-full object-cover border border-gray-200">';
+                    }
+                    return '<div class="h-9 w-9 rounded-full bg-gray-200 flex items-center justify-center text-xs font-medium text-gray-500">' +
+                        row.name.charAt(0).toUpperCase() + '</div>';
+                }
+            },
             { data: 'nip', responsivePriority: 3 },
             { data: 'name', responsivePriority: 1 },
             { data: 'gender', responsivePriority: 6 },
@@ -79,10 +115,17 @@
             });
         }
 
-        $('#teachers-table').DataTable({
+        var table = $('#teachers-table').DataTable({
             responsive: true,
             autoWidth: false,
-            ajax: { url: "{{ route('teachers.data') }}", dataSrc: 'data' },
+            ajax: {
+                url: "{{ route('teachers.data') }}",
+                data: function (d) {
+                    d.subject_id = $('#filter-subject').val();
+                    d.gender = $('#filter-gender').val();
+                },
+                dataSrc: 'data'
+            },
             columns: columns,
             language: {
                 emptyTable: 'Belum ada data guru.', zeroRecords: 'Data tidak ditemukan.',
@@ -90,6 +133,15 @@
                 info: 'Menampilkan _START_ - _END_ dari _TOTAL_ data', infoEmpty: 'Tidak ada data',
                 paginate: { previous: 'Sebelumnya', next: 'Berikutnya' }
             }
+        });
+
+        $('#filter-subject, #filter-gender').on('change', function () {
+            table.ajax.reload();
+        });
+
+        $('#filter-reset').on('click', function () {
+            $('#filter-subject, #filter-gender').val('');
+            table.ajax.reload();
         });
 
         $(document).on('click', '.btn-delete', function () {

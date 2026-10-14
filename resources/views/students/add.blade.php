@@ -9,7 +9,7 @@
         <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
             <x-breadcrumb :items="['Students' => route('students.index'), 'Add' => null]" />
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                <form method="POST" action="{{ route('students.store') }}">
+                <form method="POST" action="{{ route('students.store') }}" enctype="multipart/form-data" novalidate>
                      @csrf
 
                     <div class="mb-4">
@@ -66,6 +66,14 @@
                         <p class="text-xs text-gray-400 mt-1">Hubungkan agar siswa ini bisa melihat profilnya setelah login.</p>
                     </div>
 
+                    <div class="mb-6">
+                        <label for="photo" class="block text-sm font-medium text-gray-700">Foto</label>
+                        <input type="file" name="photo" id="photo" accept="image/jpeg,image/png"
+                            onchange="if (this.files[0] && this.files[0].size > 2097152) { alert('Ukuran foto maksimal 2 MB.'); this.value = ''; }"
+                            class="mt-1 block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                        @error('photo') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
+                        <p class="text-xs text-gray-400 mt-1">Format JPG atau PNG, maksimal 2 MB. Disarankan rasio persegi (contoh 300 x 300 px).</p>
+                    </div>
                     <div class="flex gap-2">
                         <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-5 py-2 rounded">Simpan</button>
                         <a href="{{ route('students.index') }}" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium px-5 py-2 rounded">Batal</a>

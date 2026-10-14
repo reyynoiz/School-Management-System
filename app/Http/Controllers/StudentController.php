@@ -6,20 +6,29 @@ use App\Http\Requests\StudentRequest;
 use App\Models\SchoolClass;
 use App\Models\Student;
 use App\Models\User;
+use App\Traits\HandlesPhotoUpload;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class StudentController extends Controller
 {
+    use HandlesPhotoUpload;
     public function index(): View
     {
-        return view('students.index');
+        $classes = SchoolClass::orderBy('name')->get();
+
+        return view('students.index', compact('classes'));
     }
 
-    public function data(): JsonResponse
+    public function data(Request $request): JsonResponse
     {
-        $students = Student::with('schoolClass')->orderBy('name')->get();
+        $students = Student::with('schoolClass')
+            ->when($request->filled('class_id'), fn ($q) => $q->where('class_id', $request->class_id))
+            ->when($request->filled('gender'), fn ($q) => $q->where('gender', $request->gender))
+            ->orderBy('name')
+            ->get();
 
         $data = $students->map(function ($student, $index) {
             return [
@@ -29,6 +38,7 @@ class StudentController extends Controller
                 'name'       => $student->name,
                 'gender'     => $student->gender === 'L' ? 'Laki-laki' : 'Perempuan',
                 'class_name' => $student->schoolClass->name ?? '-',
+                'photo_url'  => $student->photo ? asset('uploads/students/' . $student->photo) : null,
                 'created_at' => formatTanggalIndo($student->created_at),
                 'edit_url'   => route('students.edit', $student->id),
                 'delete_url' => route('students.destroy', $student->id),
@@ -51,7 +61,15 @@ class StudentController extends Controller
 
     public function store(StudentRequest $request): RedirectResponse
     {
-        Student::create($request->validated());
+        $data = $request->validated();
+
+        if ($request->hasFile('photo')) {
+            $data['photo'] = $this->storePhoto($request->file('photo'), 'students');
+        } else {
+            unset($data['photo']);
+        }
+
+        Student::create($data);
 
         return redirect()->route('students.index')->with('success', 'Data siswa berhasil ditambahkan.');
     }
@@ -74,16 +92,18 @@ class StudentController extends Controller
     public function update(StudentRequest $request, $id): RedirectResponse
     {
         $student = Student::findOrFail($id);
-        $student->update($request->validated());
+        $data = $request->validated();
+
+        if ($request->hasFile('photo')) {
+            $newPhoto = $this->storePhoto($request->file('photo'), 'students');
+            $this->deletePhoto($student->photo, 'students');
+            $data['photo'] = $newPhoto;
+        } else {
+            unset($data['photo']);
+        }
+
+        $student->update($data);
 
         return redirect()->route('students.index')->with('success', 'Data siswa berhasil diperbarui.');
-    }
-
-    public function destroy($id): RedirectResponse
-    {
-        $student = Student::findOrFail($id);
-        $student->update(['archived' => 1]);
-
-        return redirect()->route('students.index')->with('success', 'Data siswa berhasil dihapus.');
     }
 }

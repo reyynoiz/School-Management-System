@@ -9,7 +9,7 @@
         <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
             <x-breadcrumb :items="['Students' => route('students.index'), 'Edit' => null]" />
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                <form method="POST" action="{{ route('students.update', $student->id) }}" novalidate>
+                <form method="POST" action="{{ route('students.update', $student->id) }}" enctype="multipart/form-data" novalidate>
                     @csrf
                     @method('PUT')
 
@@ -60,6 +60,19 @@
                             @endforeach
                         </select>
                         @error('user_id') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
+                    </div>
+
+                    <div class="mb-6">
+                        <label for="photo" class="block text-sm font-medium text-gray-700">Foto</label>
+                        @if ($student->photo)
+                            <img src="{{ asset('uploads/students/' . $student->photo) }}" alt="Foto {{ $student->name }}"
+                                class="h-20 w-20 rounded-full object-cover border border-gray-200 mt-2">
+                        @endif
+                        <input type="file" name="photo" id="photo" accept="image/jpeg,image/png"
+                            onchange="if (this.files[0] && this.files[0].size > 2097152) { alert('Ukuran foto maksimal 2 MB.'); this.value = ''; }"
+                            class="mt-2 block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                        @error('photo') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
+                        <p class="text-xs text-gray-400 mt-1">Kosongkan jika tidak ingin mengganti foto. Format JPG atau PNG, maksimal 2 MB.</p>
                     </div>
 
                     <div class="flex gap-2">

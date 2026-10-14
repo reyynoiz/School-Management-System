@@ -18,6 +18,7 @@ class Student extends Model
         'nis',
         'name',
         'gender',
+        'photo',
         'archived',
     ];
 

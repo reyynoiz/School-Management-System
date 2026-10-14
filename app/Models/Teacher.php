@@ -17,6 +17,7 @@ class Teacher extends Model
         'nip',
         'name',
         'gender',
+        'photo',
         'archived',
     ];
 
