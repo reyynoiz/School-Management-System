@@ -46,6 +46,9 @@
                 <x-responsive-nav-link :href="route('archives.index')" :active="request()->routeIs('archives.*')" class="rounded-lg">
                     {{ __('Archive') }}
                 </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')" class="rounded-lg">
+                    {{ __('Users') }}
+                </x-responsive-nav-link>
             @endif
         </nav>
     </div>

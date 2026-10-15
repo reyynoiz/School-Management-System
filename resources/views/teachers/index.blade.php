@@ -16,14 +16,35 @@
                 </div>
             @endif
 
+            @if (session('import_errors'))
+                <div class="mb-4 bg-red-50 border border-red-300 text-red-700 px-4 py-3 rounded text-sm">
+                    <p class="font-medium mb-1">Import dibatalkan, tidak ada data yang tersimpan:</p>
+                    <ul class="list-disc ml-5">
+                        @foreach (session('import_errors') as $e)<li>{{ $e }}</li>@endforeach
+                    </ul>
+                </div>
+            @endif
+            @error('file')
+                <div class="mb-4 bg-red-50 border border-red-300 text-red-700 px-4 py-3 rounded text-sm">{{ $message }}</div>
+            @enderror
+
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                <div class="flex justify-between items-center mb-4">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-4">
                     <h3 class="font-semibold text-gray-800">Daftar Guru</h3>
-                    @if (Auth::user()->isAdmin())
-                        <a href="{{ route('teachers.create') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-4 py-2 rounded">
-                            + Tambah Guru
+                    <div class="flex flex-wrap gap-2">
+                        <a href="{{ route('teachers.export-pdf') }}" id="btn-export-pdf" class="bg-red-600 hover:bg-red-700 text-white text-sm font-medium px-4 py-2 rounded shadow-sm">
+                            Export PDF
                         </a>
-                    @endif
+
+                        @if (Auth::user()->isAdmin())
+                            <button type="button" onclick="document.getElementById('modal-import').classList.remove('hidden')" class="bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium px-4 py-2 rounded shadow-sm">
+                                Import Excel/CSV
+                            </button>
+                            <a href="{{ route('teachers.create') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-4 py-2 rounded shadow-sm">
+                                + Tambah Guru
+                            </a>
+                        @endif
+                    </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
@@ -73,6 +94,26 @@
 
         </div>
     </div>
+
+    @if (Auth::user()->isAdmin())
+        <div id="modal-import" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden flex items-center justify-center z-50">
+            <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">Import Data Guru</h3>
+                <form action="{{ route('teachers.import-excel') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <div class="mb-4">
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Pilih File (.xlsx, .xls, .csv)</label>
+                        <input type="file" name="file" required class="block w-full text-sm text-gray-500 border border-gray-300 rounded p-1">
+                        <p class="text-[10px] text-gray-500 mt-1">Format Kolom Header Excel: <strong>nip, nama, jenis_kelamin, mata_pelajaran, username, email</strong></p>
+                    </div>
+                    <div class="flex justify-end gap-2">
+                        <button type="button" onclick="document.getElementById('modal-import').classList.add('hidden')" class="bg-gray-200 text-gray-700 text-sm px-4 py-2 rounded">Batal</button>
+                        <button type="submit" class="bg-emerald-600 text-white text-sm px-4 py-2 rounded hover:bg-emerald-700">Upload & Import</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    @endif
 
     @push('styles')
         <link href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css" rel="stylesheet">
@@ -137,12 +178,21 @@
 
         $('#filter-subject, #filter-gender').on('change', function () {
             table.ajax.reload();
+            updateExportPdfUrl();
         });
 
         $('#filter-reset').on('click', function () {
             $('#filter-subject, #filter-gender').val('');
             table.ajax.reload();
+            updateExportPdfUrl();
         });
+
+        function updateExportPdfUrl() {
+            var subjectId = $('#filter-subject').val();
+            var gender = $('#filter-gender').val();
+            var url = "{{ route('teachers.export-pdf') }}?subject_id=" + subjectId + "&gender=" + gender;
+            $('#btn-export-pdf').attr('href', url);
+        }
 
         $(document).on('click', '.btn-delete', function () {
             if (!confirm('Yakin ingin menghapus data guru ini?')) return;

@@ -3,18 +3,23 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\TeacherRequest;
+use App\Imports\TeachersImport;
 use App\Models\Subject;
 use App\Models\Teacher;
 use App\Models\User;
 use App\Traits\HandlesPhotoUpload;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Maatwebsite\Excel\Facades\Excel;
 
 class TeacherController extends Controller
 {
     use HandlesPhotoUpload;
+
     public function index(): View
     {
         $subjects = Subject::orderBy('name')->get();
@@ -113,5 +118,36 @@ class TeacherController extends Controller
         $teacher->archive();
 
         return redirect()->route('teachers.index')->with('success', 'Data guru berhasil dihapus.');
+    }
+
+    public function exportPdf(Request $request)
+    {
+        $teachers = Teacher::with('subject')
+            ->when($request->filled('subject_id'), fn ($q) => $q->where('subject_id', $request->subject_id))
+            ->when($request->filled('gender'), fn ($q) => $q->where('gender', $request->gender))
+            ->orderBy('name')
+            ->get();
+
+        $pdf = Pdf::loadView('pdf.teachers', compact('teachers'))
+            ->setPaper('a4', 'portrait');
+
+        return $pdf->download('Laporan_Data_Guru_' . date('YmdHis') . '.pdf');
+    }
+
+    public function importExcel(Request $request): RedirectResponse
+    {
+        $request->validate(['file' => 'required|mimes:xlsx,xls,csv|max:2048']);
+
+        try {
+            DB::transaction(fn () => Excel::import(new TeachersImport, $request->file('file')));
+        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+            $errors = collect($e->failures())
+                ->map(fn ($f) => 'Baris ' . $f->row() . ': ' . implode(' ', $f->errors()))
+                ->all();
+
+            return back()->with('import_errors', $errors);
+        }
+
+        return redirect()->route('teachers.index')->with('success', 'Data guru berhasil di-import.');
     }
 }

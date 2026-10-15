@@ -16,16 +16,39 @@
                 </div>
             @endif
 
+            @if (session('import_errors'))
+                <div class="mb-4 bg-red-50 border border-red-300 text-red-700 px-4 py-3 rounded text-sm">
+                    <p class="font-medium mb-1">Import dibatalkan, tidak ada data yang tersimpan:</p>
+                    <ul class="list-disc ml-5">
+                        @foreach (session('import_errors') as $e)<li>{{ $e }}</li>@endforeach
+                    </ul>
+                </div>
+            @endif
+            @error('file')
+                <div class="mb-4 bg-red-50 border border-red-300 text-red-700 px-4 py-3 rounded text-sm">{{ $message }}</div>
+            @enderror
+
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                <div class="flex justify-between items-center mb-4">
+                <!-- Header Card & Action Buttons -->
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-4">
                     <h3 class="font-semibold text-gray-800">Daftar Siswa</h3>
-                    @if (Auth::user()->isAdmin())
-                        <a href="{{ route('students.create') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-4 py-2 rounded">
-                            + Tambah Siswa
+                    <div class="flex flex-wrap gap-2">
+                        <a href="{{ route('students.export-pdf') }}" id="btn-export-pdf" class="bg-red-600 hover:bg-red-700 text-white text-sm font-medium px-3 py-2 rounded">
+                            Export PDF
                         </a>
-                    @endif
+
+                        @if (Auth::user()->isAdmin())
+                            <button type="button" onclick="document.getElementById('modal-import').classList.remove('hidden')" class="bg-green-600 hover:bg-green-700 text-white text-sm font-medium px-3 py-2 rounded">
+                                Import Excel/CSV
+                            </button>
+                            <a href="{{ route('students.create') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-3 py-2 rounded">
+                                + Tambah Siswa
+                            </a>
+                        @endif
+                    </div>
                 </div>
 
+                <!-- Filter Section -->
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
                     <div>
                         <label for="filter-class" class="block text-xs font-medium text-gray-500 mb-1">Kelas</label>
@@ -51,6 +74,7 @@
                     </div>
                 </div>
 
+                <!-- Datatable Container -->
                 <div class="overflow-x-auto">
                     <table id="students-table" class="min-w-full text-sm w-full">
                         <thead>
@@ -71,6 +95,25 @@
                 </div>
             </div>
 
+        </div>
+    </div>
+
+    <!-- Modal Import File Excel / CSV -->
+    <div id="modal-import" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">Import Data Siswa</h3>
+            <form action="{{ route('students.import-excel') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="mb-4">
+                    <label class="block text-xs font-medium text-gray-700 mb-1">Pilih File (.xlsx, .xls, .csv)</label>
+                    <input type="file" name="file" required class="block w-full text-sm text-gray-500 border border-gray-300 rounded p-1">
+                    <p class="text-[10px] text-gray-500 mt-1">Format Kolom Header Excel: <strong>nis, nama, jenis_kelamin, kelas, username, email</strong></p>
+                </div>
+                <div class="flex justify-end gap-2">
+                    <button type="button" onclick="document.getElementById('modal-import').classList.add('hidden')" class="bg-gray-200 text-gray-700 text-sm px-4 py-2 rounded">Batal</button>
+                    <button type="submit" class="bg-green-600 text-white text-sm px-4 py-2 rounded hover:bg-green-700">Upload & Import</button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -135,13 +178,22 @@
             }
         });
 
+        function updateExportPdfUrl() {
+            var classId = $('#filter-class').val();
+            var gender = $('#filter-gender').val();
+            var url = "{{ route('students.export-pdf') }}?class_id=" + classId + "&gender=" + gender;
+            $('#btn-export-pdf').attr('href', url);
+        }
+
         $('#filter-class, #filter-gender').on('change', function () {
             table.ajax.reload();
+            updateExportPdfUrl();
         });
 
         $('#filter-reset').on('click', function () {
             $('#filter-class, #filter-gender').val('');
             table.ajax.reload();
+            updateExportPdfUrl();
         });
 
         $(document).on('click', '.btn-delete', function () {
